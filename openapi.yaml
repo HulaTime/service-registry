@@ -1,0 +1,71 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: service-registry
+  description: This service is designed to register new services
+servers:
+  - url: /registry
+paths:
+  /service:
+    post:
+      operationId: RegisterService
+      tags:
+        - service
+      summary: Create a new service record within the registry
+      parameters:
+        - name: authorization
+          in: header
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterService'
+      responses:
+        201:
+          description: Successful creation of an account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterService'
+    get:
+      operationId: ListRegisteredServices
+      tags:
+        - service
+      summary: Obtain a list of all registered services
+      responses:
+        200:
+          description: Successful creation of an account
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RegisterService'
+
+components:
+  schemas:
+    RegisterService:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - baseUrl
+        - description
+      properties:
+        name:
+          type: string
+          description: The name of the service
+          example: access
+        baseUrl:
+          type: string
+          description: The base url to access the service
+        description:
+          type: string
+          maxLength: 200
+          description: A short description of the service
+        healthcheckUrl:
+          type: string
+          description: An optional healthcheck endpoint that can be used to allow the service registry to periodically check the whether a service is healthy
